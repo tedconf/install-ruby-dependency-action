@@ -1,0 +1,26 @@
+name: Checks for system dependency for given Ruby gem and installs if needed
+inputs:
+  gem-name:
+    required: true
+    description: "Name of the gem that requires system dependency "
+  required-library:
+    required: true
+    description: "Name of the library to be installed (use a space-delimited list for multiple libraries)"
+  package-manager:
+    required: false
+    description: "Name of package manager"
+    default: "apt-get"
+
+runs:
+  using: composite
+  steps:
+    - name: Check for ${{ inputs.library-name }}  dependency
+      id: system-library
+      shell: bash
+      run: |
+        echo ::set-output name=dependency::$(grep ${{ inputs.gem-name }}  Gemfile.lock | wc -l)
+    - name: Install ${{ inputs.library-name }}
+      if: steps.system-library.outputs.dependency > 0
+      shell: bash
+      run: |
+        sudo ${{ inputs.package-manager }} -y install ${{ inputs.library-name }}
