@@ -19,8 +19,8 @@ runs:
       shell: bash
       run: |
         echo ::set-output name=dependency::$(grep ${{ inputs.gem-name }}  Gemfile.lock | wc -l)
-    - name: Install ${{ inputs.library-name }}
+    - name: Install ${{ inputs.required-library }}
       if: steps.system-library.outputs.dependency > 0
       shell: bash
       run: |
-        sudo ${{ inputs.package-manager }} -y install ${{ inputs.library-name }}
+        sudo ${{ inputs.package-manager }} -y install ${{ inputs.required-library }}
