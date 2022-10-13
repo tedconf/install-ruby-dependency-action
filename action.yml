@@ -5,7 +5,7 @@ inputs:
     description: "Name of the gem that requires system dependency "
   required-library:
     required: true
-    description: "Name of the library to be installed (use a space-delimited list for multiple libraries)"
+    description: "Name of the library to be installed (use a space-delimited string for multiple libraries)"
   package-manager:
     required: false
     description: "Name of package manager"
@@ -15,12 +15,11 @@ runs:
   using: composite
   steps:
     - name: Check for ${{ inputs.library-name }}  dependency
-      id: system-library
       shell: bash
       run: |
-        echo ::set-output name=dependency::$(grep ${{ inputs.gem-name }}  Gemfile.lock | wc -l)
+        echo "dependency=$(grep ${{ inputs.gem-name }} Gemfile* | wc -l)" >> $GITHUB_ENV
     - name: Install ${{ inputs.required-library }}
-      if: steps.system-library.outputs.dependency > 0
+      if: env.dependency > 0
       shell: bash
       run: |
         sudo ${{ inputs.package-manager }} -y install ${{ inputs.required-library }}
