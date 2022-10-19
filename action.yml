@@ -16,10 +16,11 @@ runs:
   steps:
     - name: Check for ${{ inputs.library-name }}  dependency
       shell: bash
+      id: dependency
       run: |
-        echo "dependency=$(grep ${{ inputs.gem-name }} Gemfile* | wc -l)" >> $GITHUB_ENV
+        echo "COUNT=$(grep ${{ inputs.gem-name }} Gemfile* | wc -l)" >> $GITHUB_OUTPUT
     - name: Install ${{ inputs.required-library }}
-      if: env.dependency > 0
+      if: steps.dependency.outputs.COUNT > 0
       shell: bash
       run: |
         sudo ${{ inputs.package-manager }} -y install ${{ inputs.required-library }}
