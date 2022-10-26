@@ -14,24 +14,15 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Check for ${{ inputs.library-name }}  dependency
+    - name: Check for gem dependency
       shell: bash
-      id: gemfile
+      id: dependency
       run: |
-        echo "${{ inputs.gem-name }}_COUNT=$(grep ${{ inputs.gem-name }} Gemfile* | wc -l)" >> $GITHUB_OUTPUT
-    - name: Check if .gemspec exists
-      shell: bash
-      if: ${{ steps.gemfile.outputs.${{ inputs.gem-name }}_COUNT == 0 }}
-      id: gemspec
-      run: |
-        # Need to set shell opts to avoid returning the glob string in the array
-        shopt -s nullglob
-        gemspecs=(*.gemspec)
-        if (( ${#gemspecs[@]} == 1)); then
-          echo "${{ inputs.gem-name  }}_COUNT=$(grep memcached ${gemspecs[0]} | wc -l)" >> $GITHUB_OUTPUT
-        fi
-    - name: Install ${{ inputs.required-library }}
-      if: ${{ steps.gemfile.outputs.${{ inputs.gem-name }}_COUNT > 0 || steps.gemspec.outputs.${{ inputs.gem-name }}_COUNT > 0 }}
+        echo "Checking if ${{ inptus.gem-name }} is needed"
+        echo "COUNT=$(grep -s ${{ inputs.gem-name }} Gemfile* *.gemspec | wc -l)" >> $GITHUB_OUTPUT
+    - name: Install system dependency for gem
+      if: ${{ steps.dependency.outputs.COUNT > 0 }}
       shell: bash
       run: |
+        echo "${{ inptus.gem-name }} is needed, installing ${{ inputs.required-library }} system dependency"
         sudo ${{ inputs.package-manager }} -y install ${{ inputs.required-library }}
