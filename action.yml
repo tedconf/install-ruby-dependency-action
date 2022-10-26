@@ -18,20 +18,20 @@ runs:
       shell: bash
       id: gemfile
       run: |
-        echo "COUNT=$(grep ${{ inputs.gem-name }} Gemfile* | wc -l)" >> $GITHUB_OUTPUT
+        echo "${{ inputs.gem-name }}_COUNT=$(grep ${{ inputs.gem-name }} Gemfile* | wc -l)" >> $GITHUB_OUTPUT
     - name: Check if .gemspec exists
       shell: bash
-      if: steps.gemfile.outputs.COUNT == 0
+      if: ${{ steps.gemfile.outputs.${{ inputs.gem-name }}_COUNT == 0 }}
       id: gemspec
       run: |
         # Need to set shell opts to avoid returning the glob string in the array
         shopt -s nullglob
         gemspecs=(*.gemspec)
         if (( ${#gemspecs[@]} == 1)); then
-          echo "COUNT=$(grep memcached ${gemspecs[0]} | wc -l)" >> $GITHUB_OUTPUT
+          echo "${{ inputs.gem-name  }}_COUNT=$(grep memcached ${gemspecs[0]} | wc -l)" >> $GITHUB_OUTPUT
         fi
     - name: Install ${{ inputs.required-library }}
-      if: ${{ steps.gemfile.outputs.COUNT > 0 || steps.gemspec.outputs.COUNT > 0 }}
+      if: ${{ steps.gemfile.outputs.${{ inputs.gem-name }}_COUNT > 0 || steps.gemspec.outputs.${{ inputs.gem-name }}_COUNT > 0 }}
       shell: bash
       run: |
         sudo ${{ inputs.package-manager }} -y install ${{ inputs.required-library }}
