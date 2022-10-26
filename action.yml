@@ -18,11 +18,11 @@ runs:
       shell: bash
       id: dependency
       run: |
-        echo "Checking if ${{ inptus.gem-name }} is needed"
+        echo "Checking if ${{ inputs.gem-name }} is needed"
         echo "COUNT=$(grep -s ${{ inputs.gem-name }} Gemfile* *.gemspec | wc -l)" >> $GITHUB_OUTPUT
     - name: Install system dependency for gem
       if: ${{ steps.dependency.outputs.COUNT > 0 }}
       shell: bash
       run: |
-        echo "${{ inptus.gem-name }} is needed, installing ${{ inputs.required-library }} system dependency"
+        echo "${{ inputs.gem-name }} is needed, installing ${{ inputs.required-library }} system dependency"
         sudo ${{ inputs.package-manager }} -y install ${{ inputs.required-library }}
