@@ -18,6 +18,7 @@ runs:
       shell: bash
       id: dependency
       run: |
+        echo "COUNT=$(grep -s ${{ inputs.gem-name }} Gemfile* *.gemspec | wc -l)"
         echo "COUNT=$(grep -s ${{ inputs.gem-name }} Gemfile* *.gemspec | wc -l)" >> $GITHUB_OUTPUT
     - name: Install ${{ inputs.required-library }}
       if: steps.dependency.outputs.COUNT > 0
