@@ -20,6 +20,7 @@ runs:
       run: |
         echo "COUNT=$(grep ${{ inputs.gem-name }} Gemfile* | wc -l)" >> $GITHUB_OUTPUT
     - name: Check if .gemspec exists
+      shell: bash
       if: steps.gemfile.outputs.COUNT == 0
       id: gemspec
       run: |
