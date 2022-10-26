@@ -28,7 +28,7 @@ runs:
         shopt -s nullglob
         gemspecs=(*.gemspec)
         if (( ${#gemspecs[@]} == 1)); then
-          echo "COUNT=$(grep memcached ${gemspecs[0]} | wc -l)"
+          echo "COUNT=$(grep memcached ${gemspecs[0]} | wc -l)" >> $GITHUB_OUTPUT
         fi
     - name: Install ${{ inputs.required-library }}
       if: ${{ steps.gemfile.outputs.COUNT > 0 || steps.gemspec.outputs.COUNT > 0 }}
