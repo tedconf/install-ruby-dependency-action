@@ -25,4 +25,5 @@ runs:
       shell: bash
       run: |
         echo "${{ inputs.gem-name }} is needed, installing ${{ inputs.required-library }} system dependency"
+        sudo ${{ inputs.package-manager }} update
         sudo ${{ inputs.package-manager }} -y install ${{ inputs.required-library }}
